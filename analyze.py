@@ -79,12 +79,49 @@ if __name__ == '__main__':
 
         print("\nExpenditure per Category:\n", category_expenditure, file=report_file)
 
-        # 6. Pie chart of expenditures per category
-        plt.figure(figsize=(8, 8))
-        plt.pie(category_expenditure['Total Expenditure'], labels=category_expenditure['Category'], autopct='%1.1f%%')
-        plt.title('Expenditure per Category')
+        # 6. Pie chart of expenditures per category (entire date range)
+        plt.figure(figsize=(10, 8))  # Larger figure size
+        plt.pie(
+            category_expenditure['Total Expenditure'], 
+            labels=category_expenditure['Category'], 
+            autopct='%1.1f%%', 
+            startangle=140
+        )
+        plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)  # Add padding around the chart
+        pie_chart_title = (
+            f"Date Range: {min_date.date()} to {max_date.date()}, "
+            f"Total Expenditure: €{round(total_expenditure, 2)}"
+        )
+        plt.title(pie_chart_title)
         pie_chart_path = os.path.join(REPORT_DIR, 'expenditure_per_category.png')
         plt.savefig(pie_chart_path)
+        plt.show()
+
+        # 7. Pie chart of expenditures per category (last three months)
+        last_three_months = max_date - pd.DateOffset(months=3)
+        recent_data = data[data['Ημ/νία συναλλαγής'] >= last_three_months]
+
+        # Group by category for the last three months
+        recent_category_expenditure = recent_data.groupby('Κατηγορία δαπάνης')['Ποσό (EUR)'].sum().reset_index()
+        recent_category_expenditure.columns = ['Category', 'Total Expenditure']
+        recent_total_expenditure = recent_category_expenditure['Total Expenditure'].sum()
+
+        # Create the pie chart for the last three months
+        plt.figure(figsize=(10, 8))
+        plt.pie(
+            recent_category_expenditure['Total Expenditure'], 
+            labels=recent_category_expenditure['Category'], 
+            autopct='%1.1f%%', 
+            startangle=140
+        )
+        plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)  # Add padding around the chart
+        recent_pie_chart_title = (
+            f"Last 3 Months: {last_three_months.date()} to {max_date.date()}, "
+            f"Total Expenditure: €{round(recent_total_expenditure, 2)}"
+        )
+        plt.title(recent_pie_chart_title)
+        recent_pie_chart_path = os.path.join(REPORT_DIR, 'expenditure_per_category_last_three_months.png')
+        plt.savefig(recent_pie_chart_path)
         plt.show()
 
     print(f"Report saved to {report_path}")
