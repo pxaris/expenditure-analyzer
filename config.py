@@ -8,6 +8,7 @@ REPORT_DIR = os.path.join(ROOT_DIR, 'report')
 # data specific information
 DATA_FILENAME = 'sample_data.csv'
 N_SKIPROWS = 6  # rows of the CSV file to skip
+CSV_DELIMITER = ';'
 DATE_COLUMN = 'Ημ/νία συναλλαγής'
 EXPENDITURE_COLUMN = 'Ποσό (EUR)'
 EXPENDITURE_CATEGORY_COLUMN = 'Κατηγορία δαπάνης'

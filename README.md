@@ -30,6 +30,7 @@ Open the `config.py` file and set the following configuration variables:
 
 - `DATA_FILENAME`: Name of the CSV file containing transaction data, e.g., `'sample_data.csv'`.
 - `N_SKIPROWS`: Number of rows to skip at the beginning of the CSV file, typically for headers or additional info, e.g., `6`.
+- `CSV_DELIMITER`: The delimiter that is used in the CSV file, e.g., `';'`.
 - `DATE_COLUMN`: Name of the column in the CSV file containing transaction dates, e.g., `'Ημ/νία συναλλαγής'`.
 - `EXPENDITURE_COLUMN`: Name of the column with expenditure amounts, e.g., `'Ποσό (EUR)'`.
 - `EXPENDITURE_CATEGORY_COLUMN`: Name of the column categorizing expenditures, e.g., `'Κατηγορία δαπάνης'`.

@@ -1,13 +1,13 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
-from config import DATA_DIR, REPORT_DIR, DATA_FILENAME, N_SKIPROWS, DATE_COLUMN, EXPENDITURE_COLUMN, EXPENDITURE_CATEGORY_COLUMN, CURRENCY, DATE_FORMAT, OUTPUT_FILENAME
+from config import DATA_DIR, REPORT_DIR, DATA_FILENAME, N_SKIPROWS, CSV_DELIMITER, DATE_COLUMN, EXPENDITURE_COLUMN, EXPENDITURE_CATEGORY_COLUMN, CURRENCY, DATE_FORMAT, OUTPUT_FILENAME
 
 
 def load_data():
     """Load and preprocess CSV data."""
     data = pd.read_csv(os.path.join(DATA_DIR, DATA_FILENAME),
-                       skiprows=N_SKIPROWS, delimiter=';')
+                       skiprows=N_SKIPROWS, delimiter=CSV_DELIMITER)
     data[DATE_COLUMN] = pd.to_datetime(data[DATE_COLUMN], dayfirst=True)
     data[EXPENDITURE_COLUMN] = data[EXPENDITURE_COLUMN].replace(
         ',', '.', regex=True).replace('-', '').astype(float).abs()
