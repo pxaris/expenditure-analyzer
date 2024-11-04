@@ -59,7 +59,7 @@ The analysis results offer a comprehensive overview of the expenditure trends, h
 
 ## Additional Information
 
-- **Sample Data**: A sample CSV file is included to demonstrate the format required for analysis. It follows the rationale of an exported data file from a Greek bank.
+- **Sample Data**: A sample CSV file is included to demonstrate the format required for analysis. It follows the rationale of an exported data file from a Greek bank and the respective analysis can be found in the `sample_report/` directory.
 - **Customization**: Modify `config.py` and adjust the `analyze.py` script as needed to fit different datasets or specific analysis requirements.
 
 Enjoy analyzing your expenditure data!
