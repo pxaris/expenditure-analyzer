@@ -1,18 +1,18 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
-from config import DATA_DIR, FILENAME, N_SKIPROWS, REPORT_DIR, DATE_FORMAT
+from config import DATA_DIR, FILENAME, N_SKIPROWS, DATE_COLUMN, EXPENDITURE_COLUMN, EXPENDITURE_CATEGORY_COLUMN, CURRENCY, REPORT_DIR, DATE_FORMAT
 
 def load_data():
     """Load and preprocess CSV data."""
     data = pd.read_csv(os.path.join(DATA_DIR, FILENAME), skiprows=N_SKIPROWS, delimiter=';')
-    data['Ημ/νία συναλλαγής'] = pd.to_datetime(data['Ημ/νία συναλλαγής'], dayfirst=True)
-    data['Ποσό (EUR)'] = data['Ποσό (EUR)'].replace(',', '.', regex=True).replace('-', '').astype(float).abs()
+    data[DATE_COLUMN] = pd.to_datetime(data[DATE_COLUMN], dayfirst=True)
+    data[EXPENDITURE_COLUMN] = data[EXPENDITURE_COLUMN].replace(',', '.', regex=True).replace('-', '').astype(float).abs()
     return data
 
 def calculate_total_expenditure(data):
     """Calculate total expenditure."""
-    return data['Ποσό (EUR)'].sum()
+    return data[EXPENDITURE_COLUMN].sum()
 
 def calculate_average_expenditure(total, days_range):
     """Calculate average expenditure per day."""
@@ -20,12 +20,12 @@ def calculate_average_expenditure(total, days_range):
 
 def get_date_range(data):
     """Get min and max dates from the data."""
-    return data['Ημ/νία συναλλαγής'].min(), data['Ημ/νία συναλλαγής'].max()
+    return data[DATE_COLUMN].min(), data[DATE_COLUMN].max()
 
 def generate_monthly_summary(data):
     """Generate monthly summary with total and average expenditure."""
-    data['Month'] = data['Ημ/νία συναλλαγής'].dt.to_period('M')
-    monthly_expenditure = data.groupby('Month')['Ποσό (EUR)'].agg(['sum', 'mean']).reset_index()
+    data['Month'] = data[DATE_COLUMN].dt.to_period('M')
+    monthly_expenditure = data.groupby('Month')[EXPENDITURE_COLUMN].agg(['sum', 'mean']).reset_index()
     monthly_expenditure.columns = ['Month', 'Total Expenditure', 'Average Expenditure']
     return monthly_expenditure.round(2)
 
@@ -68,21 +68,21 @@ def generate_report():
 
     plot_bar_chart(
         monthly_summary, 'Month', 'Total Expenditure',
-        f'Total Monthly Expenditure ({formatted_min_date} to {formatted_max_date})', 'Total Expenditure (EUR)',
+        f'Total Monthly Expenditure ({formatted_min_date} to {formatted_max_date})', f'Total Expenditure ({CURRENCY})',
         os.path.join(REPORT_DIR, 'monthly_expenditure_total.png')
     )
     plot_bar_chart(
         monthly_summary, 'Month', 'Average Expenditure',
-        f'Average Daily Expenditure ({formatted_min_date} to {formatted_max_date})', 'Average Expenditure (EUR)',
+        f'Average Daily Expenditure ({formatted_min_date} to {formatted_max_date})', f'Average Expenditure ({CURRENCY})',
         os.path.join(REPORT_DIR, 'monthly_expenditure_average.png')
     )
     
     # Expenditure per category for entire date range
-    category_expenditure = data.groupby('Κατηγορία δαπάνης')['Ποσό (EUR)'].sum().reset_index()
+    category_expenditure = data.groupby(EXPENDITURE_CATEGORY_COLUMN)[EXPENDITURE_COLUMN].sum().reset_index()
     category_expenditure.columns = ['Category', 'Total Expenditure']
     plot_pie_chart(
         category_expenditure,
-        f"Date Range: {formatted_min_date} to {formatted_max_date}\nTotal Expenditure: €{round(total_expenditure, 2)}",
+        f"Date Range: {formatted_min_date} to {formatted_max_date}\nTotal Expenditure: {CURRENCY}{round(total_expenditure, 2)}",
         os.path.join(REPORT_DIR, 'expenditure_per_category.png')
     )
 
@@ -91,14 +91,14 @@ def generate_report():
         ("Last 3 Months", pd.DateOffset(months=3), 'last_three_months'),
         ("Last Month", pd.DateOffset(months=1), 'last_month')
     ]:
-        recent_data = data[data['Ημ/νία συναλλαγής'] >= max_date - offset]
-        recent_category_expenditure = recent_data.groupby('Κατηγορία δαπάνης')['Ποσό (EUR)'].sum().reset_index()
+        recent_data = data[data[DATE_COLUMN] >= max_date - offset]
+        recent_category_expenditure = recent_data.groupby(EXPENDITURE_CATEGORY_COLUMN)[EXPENDITURE_COLUMN].sum().reset_index()
         recent_category_expenditure.columns = ['Category', 'Total Expenditure']
         recent_total_expenditure = recent_category_expenditure['Total Expenditure'].sum()
         
         plot_pie_chart(
             recent_category_expenditure,
-            f"{period}: {(max_date - offset).strftime(DATE_FORMAT)} to {formatted_max_date}\nTotal Expenditure: €{round(recent_total_expenditure, 2)}",
+            f"{period}: {(max_date - offset).strftime(DATE_FORMAT)} to {formatted_max_date}\nTotal Expenditure: {CURRENCY}{round(recent_total_expenditure, 2)}",
             os.path.join(REPORT_DIR, f'expenditure_per_category_{filename_suffix}.png')
         )
     
