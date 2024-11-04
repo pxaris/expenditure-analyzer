@@ -6,3 +6,6 @@ REPORT_DIR = os.path.join(ROOT_DIR, 'report')
 
 FILENAME = 'Κινήσεις κάρτας.csv'
 N_SKIPROWS = 6
+
+DATE_FORMAT = '%d/%m/%Y'
+
