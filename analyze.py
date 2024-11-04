@@ -16,25 +16,33 @@ if __name__ == '__main__':
         # Convert date column to datetime format
         data['Ημ/νία συναλλαγής'] = pd.to_datetime(data['Ημ/νία συναλλαγής'], dayfirst=True)
         
+        # Determine the date range
+        min_date = data['Ημ/νία συναλλαγής'].min()
+        max_date = data['Ημ/νία συναλλαγής'].max()
+        print(f"Report Date Range: {min_date.date()} to {max_date.date()}", file=report_file)
+        print("=" * 50, file=report_file)  # Divider line for readability
+        
         # Convert "Ποσό (EUR)" to numeric, handling commas and negative values, and take absolute values
         data['Ποσό (EUR)'] = data['Ποσό (EUR)'].replace(',', '.', regex=True).replace('-', '').astype(float).abs()
 
         # 1. Total expenditure
         total_expenditure = data['Ποσό (EUR)'].sum()
-        print("Total Expenditure:", total_expenditure, file=report_file)
+        print("Total Expenditure:", round(total_expenditure, 2), file=report_file)
 
         # 2. Average expenditure per day
-        min_date = data['Ημ/νία συναλλαγής'].min()
-        max_date = data['Ημ/νία συναλλαγής'].max()
         days_range = (max_date - min_date).days + 1  # Include both min and max dates
         average_expenditure_per_day = total_expenditure / days_range
-        print("Average Expenditure per Day:", average_expenditure_per_day, file=report_file)
+        print("Average Expenditure per Day:", round(average_expenditure_per_day, 2), file=report_file)
         print("Number of Days (from min to max date):", days_range, file=report_file)
 
         # 3. Monthly total and average expenditure
         data['Month'] = data['Ημ/νία συναλλαγής'].dt.to_period('M')  # Extract month-year
         monthly_expenditure = data.groupby('Month')['Ποσό (EUR)'].agg(['sum', 'mean']).reset_index()
         monthly_expenditure.columns = ['Month', 'Total Expenditure', 'Average Expenditure']
+
+        # Round the average values to two decimals
+        monthly_expenditure['Total Expenditure'] = monthly_expenditure['Total Expenditure'].round(2)
+        monthly_expenditure['Average Expenditure'] = monthly_expenditure['Average Expenditure'].round(2)
 
         print("\nMonthly Expenditure:\n", monthly_expenditure, file=report_file)
         
@@ -51,6 +59,7 @@ if __name__ == '__main__':
         plt.tight_layout()
         total_expenditure_path = os.path.join(REPORT_DIR, 'total_monthly_expenditure.png')
         plt.savefig(total_expenditure_path)
+        plt.show()
 
         # Visualization of monthly expenditure (Average Expenditure - Bar Chart)
         plt.figure(figsize=(10, 6))
@@ -62,6 +71,7 @@ if __name__ == '__main__':
         plt.tight_layout()
         avg_expenditure_path = os.path.join(REPORT_DIR, 'average_monthly_expenditure.png')
         plt.savefig(avg_expenditure_path)
+        plt.show()
         
         # 5. Sum per category
         category_expenditure = data.groupby('Κατηγορία δαπάνης')['Ποσό (EUR)'].sum().reset_index()
@@ -75,6 +85,7 @@ if __name__ == '__main__':
         plt.title('Expenditure per Category')
         pie_chart_path = os.path.join(REPORT_DIR, 'expenditure_per_category.png')
         plt.savefig(pie_chart_path)
+        plt.show()
 
     print(f"Report saved to {report_path}")
     print(f"Figures saved in {REPORT_DIR}")
