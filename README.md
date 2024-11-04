@@ -11,8 +11,8 @@ To get started, install the required Python packages. It's recommended to use a 
 
 1. Clone the repository:
    ```bash
-   git clone <repository_url>
-   cd <repository_name>
+   git clone https://github.com/pxaris/expenditure-analyzer.git
+   cd expenditure-analyzer
    ```
 
 2. Install the required packages:
