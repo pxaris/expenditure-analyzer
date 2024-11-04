@@ -64,12 +64,12 @@ def generate_report():
 
     plot_bar_chart(
         monthly_summary, 'Month', 'Total Expenditure',
-        'Total Monthly Expenditure', 'Total Expenditure (EUR)',
+        f'Total Monthly Expenditure ({min_date.date()} to {max_date.date()})', 'Total Expenditure (EUR)',
         os.path.join(REPORT_DIR, 'monthly_expenditure_total.png')
     )
     plot_bar_chart(
         monthly_summary, 'Month', 'Average Expenditure',
-        'Average Monthly Expenditure', 'Average Expenditure (EUR)',
+        f'Average Monthly Expenditure ({min_date.date()} to {max_date.date()})', 'Average Expenditure (EUR)',
         os.path.join(REPORT_DIR, 'monthly_expenditure_average.png')
     )
     
