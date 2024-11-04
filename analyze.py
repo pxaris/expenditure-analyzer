@@ -123,6 +123,33 @@ if __name__ == '__main__':
         recent_pie_chart_path = os.path.join(REPORT_DIR, 'expenditure_per_category_last_three_months.png')
         plt.savefig(recent_pie_chart_path)
         plt.show()
+        
+        # 8. Pie chart of expenditures per category (last month)
+        last_month = max_date - pd.DateOffset(months=1)
+        last_month_data = data[data['Ημ/νία συναλλαγής'] >= last_month]
+        
+        # Group by category for the last month
+        last_month_category_expenditure = last_month_data.groupby('Κατηγορία δαπάνης')['Ποσό (EUR)'].sum().reset_index()
+        last_month_category_expenditure.columns = ['Category', 'Total Expenditure']
+        last_month_total_expenditure = last_month_category_expenditure['Total Expenditure'].sum()        
+        
+        # Create the pie chart for the last month
+        plt.figure(figsize=(10, 8))
+        plt.pie(
+            last_month_category_expenditure['Total Expenditure'], 
+            labels=last_month_category_expenditure['Category'], 
+            autopct='%1.1f%%', 
+            startangle=140
+        )
+        plt.subplots_adjust(left=0.1, right=0.9, top=0.9, bottom=0.1)  # Add padding around the chart
+        last_month_pie_chart_title = (
+            f"Last Month: {last_month.date()} to {max_date.date()}, "
+            f"Total Expenditure: €{round(last_month_total_expenditure, 2)}"
+        )
+        plt.title(last_month_pie_chart_title)
+        last_month_pie_chart_path = os.path.join(REPORT_DIR, 'expenditure_per_category_last_month.png')
+        plt.savefig(last_month_pie_chart_path)
+        plt.show()
 
     print(f"Report saved to {report_path}")
     print(f"Figures saved in {REPORT_DIR}")
