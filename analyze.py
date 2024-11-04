@@ -1,11 +1,11 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
-from config import DATA_DIR, FILENAME, N_SKIPROWS, DATE_COLUMN, EXPENDITURE_COLUMN, EXPENDITURE_CATEGORY_COLUMN, CURRENCY, REPORT_DIR, DATE_FORMAT
+from config import DATA_DIR, REPORT_DIR, DATA_FILENAME, N_SKIPROWS, DATE_COLUMN, EXPENDITURE_COLUMN, EXPENDITURE_CATEGORY_COLUMN, CURRENCY, DATE_FORMAT, OUTPUT_FILENAME
 
 def load_data():
     """Load and preprocess CSV data."""
-    data = pd.read_csv(os.path.join(DATA_DIR, FILENAME), skiprows=N_SKIPROWS, delimiter=';')
+    data = pd.read_csv(os.path.join(DATA_DIR, DATA_FILENAME), skiprows=N_SKIPROWS, delimiter=';')
     data[DATE_COLUMN] = pd.to_datetime(data[DATE_COLUMN], dayfirst=True)
     data[EXPENDITURE_COLUMN] = data[EXPENDITURE_COLUMN].replace(',', '.', regex=True).replace('-', '').astype(float).abs()
     return data
@@ -53,7 +53,7 @@ def plot_pie_chart(data, title, filename):
 def generate_report():
     """Main function to generate the expenditure report and charts."""
     os.makedirs(REPORT_DIR, exist_ok=True)
-    report_path = os.path.join(REPORT_DIR, 'report.txt')
+    report_path = os.path.join(REPORT_DIR, OUTPUT_FILENAME)
     data = load_data()
     min_date, max_date = get_date_range(data)
     days_range = (max_date - min_date).days + 1

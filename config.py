@@ -6,7 +6,7 @@ DATA_DIR = os.path.join(ROOT_DIR, 'data')
 REPORT_DIR = os.path.join(ROOT_DIR, 'report')
 
 # data specific information
-FILENAME = 'sample_data.csv'
+DATA_FILENAME = 'sample_data.csv'
 N_SKIPROWS = 6  # rows of the CSV file to skip
 DATE_COLUMN = 'Ημ/νία συναλλαγής'
 EXPENDITURE_COLUMN = 'Ποσό (EUR)'
@@ -15,4 +15,5 @@ CURRENCY = '€'
 
 # reporting information
 DATE_FORMAT = '%d/%m/%Y'
+OUTPUT_FILENAME = 'report.txt'
 
