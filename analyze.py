@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
-from config import DATA_DIR, FILENAME, N_SKIPROWS, REPORT_DIR
+from config import DATA_DIR, FILENAME, N_SKIPROWS, REPORT_DIR, DATE_FORMAT
 
 def load_data():
     """Load and preprocess CSV data."""
@@ -61,15 +61,19 @@ def generate_report():
     average_expenditure_per_day = calculate_average_expenditure(total_expenditure, days_range)
     monthly_summary = generate_monthly_summary(data)
     monthly_summary['Month'] = monthly_summary['Month'].dt.to_timestamp()
+    
+    # Format dates as 'dd-mm-yyyy'
+    formatted_min_date = min_date.strftime(DATE_FORMAT)
+    formatted_max_date = max_date.strftime(DATE_FORMAT)
 
     plot_bar_chart(
         monthly_summary, 'Month', 'Total Expenditure',
-        f'Total Monthly Expenditure ({min_date.date()} to {max_date.date()})', 'Total Expenditure (EUR)',
+        f'Total Monthly Expenditure ({formatted_min_date} to {formatted_max_date})', 'Total Expenditure (EUR)',
         os.path.join(REPORT_DIR, 'monthly_expenditure_total.png')
     )
     plot_bar_chart(
         monthly_summary, 'Month', 'Average Expenditure',
-        f'Average Monthly Expenditure ({min_date.date()} to {max_date.date()})', 'Average Expenditure (EUR)',
+        f'Average Daily Expenditure ({formatted_min_date} to {formatted_max_date})', 'Average Expenditure (EUR)',
         os.path.join(REPORT_DIR, 'monthly_expenditure_average.png')
     )
     
@@ -78,7 +82,7 @@ def generate_report():
     category_expenditure.columns = ['Category', 'Total Expenditure']
     plot_pie_chart(
         category_expenditure,
-        f"Date Range: {min_date.date()} to {max_date.date()}, Total Expenditure: €{round(total_expenditure, 2)}",
+        f"Date Range: {formatted_min_date} to {formatted_max_date}\nTotal Expenditure: €{round(total_expenditure, 2)}",
         os.path.join(REPORT_DIR, 'expenditure_per_category.png')
     )
 
@@ -94,13 +98,13 @@ def generate_report():
         
         plot_pie_chart(
             recent_category_expenditure,
-            f"{period}: {(max_date - offset).date()} to {max_date.date()}, Total Expenditure: €{round(recent_total_expenditure, 2)}",
+            f"{period}: {(max_date - offset).strftime(DATE_FORMAT)} to {formatted_max_date}\nTotal Expenditure: €{round(recent_total_expenditure, 2)}",
             os.path.join(REPORT_DIR, f'expenditure_per_category_{filename_suffix}.png')
         )
     
     # write report to file
     with open(report_path, 'w') as report_file:
-        print(f"Report Date Range: {min_date.date()} to {max_date.date()}", file=report_file)
+        print(f"Report Date Range: {formatted_min_date} to {formatted_max_date}", file=report_file)
         print("=" * 50, file=report_file)
         print("Total Expenditure:", round(total_expenditure, 2), file=report_file)
         print("Average Expenditure per Day:", round(average_expenditure_per_day, 2), file=report_file)
