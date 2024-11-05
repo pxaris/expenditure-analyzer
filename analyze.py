@@ -92,10 +92,17 @@ def generate_report():
         print("Average Expenditure per Day:", round(
             average_expenditure_per_day, 2), file=report_file)
         print("Number of Days (from min to max date):",
-              days_range, file=report_file)
+            days_range, file=report_file)
         print("\nMonthly Expenditure:\n", monthly_summary, file=report_file)
-        print("\nExpenditure per Category:\n",
-              category_expenditure, file=report_file)
+
+        # Sort category_expenditure by Total Expenditure in descending order
+        category_expenditure_sorted = category_expenditure.sort_values(
+            by='Total Expenditure', ascending=False
+        )
+        # Temporarily set display options to print the full DataFrame
+        with pd.option_context('display.max_rows', None):
+            print("\nExpenditure per Category (sorted by Total Expenditure):\n",
+                category_expenditure_sorted, file=report_file)
 
     print(f"Report saved to {report_path}")
     print(f"Figures saved in {CONFIG['REPORT_DIR']}")
