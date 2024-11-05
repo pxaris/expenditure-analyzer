@@ -15,7 +15,7 @@ Monthly Expenditure:
 6 2024-07-01             787.85                      25.41
 7 2024-08-01            1930.67                      62.28
 8 2024-09-01            1973.69                      65.79
-9 2024-10-01            1690.89                      54.54
+9 2024-10-01            1690.89                      56.36
 
 Expenditure per Category:
                                  Category  Total Expenditure
