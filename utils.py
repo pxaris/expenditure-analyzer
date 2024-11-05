@@ -4,13 +4,22 @@ import os
 
 
 def load_data(config):
-    """Load and preprocess CSV data."""
+    """Load and preprocess CSV data, filtering rows with non-negative expenditures."""
     data = pd.read_csv(os.path.join(config['DATA_DIR'], config['DATA_FILENAME']),
                        skiprows=config['N_SKIPROWS'], delimiter=config['CSV_DELIMITER'])
+    
+    # Parse date and expenditure columns
     data[config['DATE_COLUMN']] = pd.to_datetime(data[config['DATE_COLUMN']], dayfirst=True)
-    data[config['EXPENDITURE_COLUMN']] = data[config['EXPENDITURE_COLUMN']].replace(
-        ',', '.', regex=True).replace('-', '').astype(float).abs()
+    data[config['EXPENDITURE_COLUMN']] = data[config['EXPENDITURE_COLUMN']].replace(',', '.', regex=True)
+    
+    # Filter out rows where the expenditure column does not start with a minus sign (income data)
+    data = data[data[config['EXPENDITURE_COLUMN']].str.startswith('-')]
+
+    # Convert expenditure column to a positive float for analysis
+    data[config['EXPENDITURE_COLUMN']] = data[config['EXPENDITURE_COLUMN']].astype(float).abs()
+    
     return data
+
 
 def calculate_total_expenditure(data, config):
     """Calculate total expenditure."""
