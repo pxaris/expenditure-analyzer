@@ -1,7 +1,7 @@
 
 # Expenditure Data Analysis
 
-This repository provides a set of scripts and configurations to analyze expenditure data. The main goal of the analysis is to generate reports and visualizations for financial transactions over time, categorized by various types of expenditures. After running the analysis, a summary report and visualizations are saved for easy interpretation of the data.
+This repository contains scripts to analyze expenditure data, generating categorized reports and visualizations of financial transactions over time. The analysis outputs a summary report and visualizations for easy data interpretation.
 
 ## Docker Installation and Usage
 
@@ -23,7 +23,7 @@ docker build -t expenditure-analyzer .
 
 ### Step 2: Run the Analysis with Docker
 
-To analyze expenditure data, run the following Docker command:
+To analyze expenditure data, place your CSV file in the `data/` directory, then specify the `--data_filename` with the following Docker command:
 ```bash
 docker run --rm -v $(pwd)/data:/app/data -v $(pwd)/report:/app/report expenditure-analyzer --data_filename 'sample_data.csv'
 ```
@@ -35,7 +35,12 @@ This command:
 
 ### Step 3: View the Results
 
-The `report.txt` file and the figures can be found under the `report/` directory.
+After the analysis completes, you can find the output in the `report/` directory:
+
+- **Report**: The `report.txt` file provides a summary of the analyzed expenditure data, including the total and average expenditures, breakdowns by category, and insights by month.
+- **Figures**: The generated figures, including bar charts of monthly expenditures and pie charts showing expenditure distribution by category, are also saved in the `report/` directory.
+
+These outputs offer a comprehensive view of your spending patterns, making it easier to understand and interpret your financial data over time.
 
 ---
 
@@ -92,13 +97,7 @@ This will process the specified input data, perform analysis, and generate repor
 
 #### Step 3: View the Results
 
-After the analysis completes:
-
-1. **Report**: Open the `report.txt` file located in the `report/` directory (or the directory specified in `--report_dir`). This file contains a summary of the analyzed expenditure data, including total and average expenditures, breakdowns by category, and more.
-   
-2. **Figures**: Find the generated figures saved in the `report/` directory (or the one specified in `--report_dir`). These figures include bar charts of monthly expenditures and pie charts for expenditure breakdowns by category.
-
-The analysis results offer a comprehensive overview of the expenditure trends, helping you better understand spending patterns over time.
+After the analysis completes, the **Report** and the **Figures** will be located in the `report/` directory (or the directory specified in `--report_dir`).
 
 ---
 
