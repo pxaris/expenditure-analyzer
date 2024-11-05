@@ -40,14 +40,18 @@ def generate_monthly_summary(data):
 
 
 def plot_bar_chart(data, x_col, y_col, title, ylabel, filename):
-    """Plot and save a bar chart."""
+    """Plot and save a bar chart with an average line."""
+    avg_value = data[y_col].mean()  # Calculate the average value for the dashed line
+    
     plt.figure(figsize=(10, 6))
-    plt.bar(data[x_col].values, data[y_col].values,
-            color='skyblue', width=16.2)
+    plt.bar(data[x_col].values, data[y_col].values, color='skyblue' if 'Total' in y_col else 'lightgreen', width=16.2)
+    plt.axhline(y=avg_value, color='r', linestyle='--', label=f'Average: {avg_value:.2f}')
     plt.title(title)
     plt.xlabel('Month')
     plt.ylabel(ylabel)
     plt.xticks(rotation=45)
+    plt.yticks(list(plt.yticks()[0]) + [avg_value])  # Add average line value to y-ticks
+    plt.legend()
     plt.tight_layout()
     plt.savefig(filename)
     plt.show()
