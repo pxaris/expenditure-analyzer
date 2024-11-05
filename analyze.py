@@ -48,7 +48,7 @@ def generate_report():
         os.path.join(CONFIG['REPORT_DIR'], 'monthly_expenditure_total.png')
     )
     plot_bar_chart(
-        monthly_summary, 'Month', 'Average Expenditure',
+        monthly_summary, 'Month', 'Average Daily Expenditure',
         f'Average Daily Expenditure ({formatted_min_date} to {formatted_max_date})', 
         f'Average Expenditure ({CONFIG["CURRENCY"]})',
         os.path.join(CONFIG['REPORT_DIR'], 'monthly_expenditure_average.png')
