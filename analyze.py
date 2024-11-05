@@ -1,10 +1,30 @@
 import os
+import argparse
 import pandas as pd
 from config import CONFIG
 from utils import (
     load_data, calculate_total_expenditure, calculate_average_expenditure,
     get_date_range, generate_monthly_summary, plot_bar_chart, plot_pie_chart
 )
+
+
+def parse_args():
+    """Parse command-line arguments to override main config values."""
+    parser = argparse.ArgumentParser(description="Analyze expenditure data and generate reports.")
+
+    # Add arguments for main configuration overrides
+    parser.add_argument('--data_filename', type=str, default=CONFIG['DATA_FILENAME'],
+                        help='Name of the CSV file containing transaction data.')
+    parser.add_argument('--report_dir', type=str, default=CONFIG['REPORT_DIR'],
+                        help='Directory to save report and figures.')
+
+    args = parser.parse_args()
+
+    # Update CONFIG dictionary with parsed arguments
+    CONFIG.update({
+        'DATA_FILENAME': args.data_filename,
+        'REPORT_DIR': args.report_dir,
+    })
 
 
 def generate_report():
@@ -53,8 +73,7 @@ def generate_report():
         recent_category_expenditure = recent_data.groupby(CONFIG['EXPENDITURE_CATEGORY_COLUMN'])[
             CONFIG['EXPENDITURE_COLUMN']].sum().reset_index()
         recent_category_expenditure.columns = ['Category', 'Total Expenditure']
-        recent_total_expenditure = recent_category_expenditure['Total Expenditure'].sum(
-        )
+        recent_total_expenditure = recent_category_expenditure['Total Expenditure'].sum()
 
         plot_pie_chart(
             recent_category_expenditure,
@@ -83,4 +102,5 @@ def generate_report():
 
 
 if __name__ == '__main__':
+    parse_args()
     generate_report()

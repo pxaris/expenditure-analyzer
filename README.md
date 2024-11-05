@@ -24,13 +24,13 @@ To get started, install the required Python packages. It's recommended to use a 
 
 To analyze expenditure data, follow these steps:
 
-### Step 1: Configure Variables
+### Step 1: Configure Default Variables
 
-Open the `config.py` file and set the following configuration variables:
+Open the `config.py` file and set the following default configuration variables if needed:
 
-- `DATA_FILENAME`: Name of the CSV file containing transaction data, e.g., `'sample_data.csv'`.
+- `DATA_FILENAME`: Name of the default CSV file containing transaction data, e.g., `'sample_data.csv'`.
 - `N_SKIPROWS`: Number of rows to skip at the beginning of the CSV file, typically for headers or additional info, e.g., `6`.
-- `CSV_DELIMITER`: The delimiter that is used in the CSV file, e.g., `';'`.
+- `CSV_DELIMITER`: The delimiter used in the CSV file, e.g., `';'`.
 - `DATE_COLUMN`: Name of the column in the CSV file containing transaction dates, e.g., `'Ημ/νία συναλλαγής'`.
 - `EXPENDITURE_COLUMN`: Name of the column with expenditure amounts, e.g., `'Ποσό (EUR)'`.
 - `EXPENDITURE_CATEGORY_COLUMN`: Name of the column categorizing expenditures, e.g., `'Κατηγορία δαπάνης'`.
@@ -38,21 +38,29 @@ Open the `config.py` file and set the following configuration variables:
 
 ### Step 2: Run the Analysis
 
-Execute the analysis script:
+You can override the default `DATA_FILENAME` and `REPORT_DIR` values directly from the command line.
 
+#### Basic Usage
+To use the default values specified in `config.py`, simply run:
 ```bash
 python analyze.py
 ```
 
-This will process the input data, perform analysis, and generate reports and visualizations.
+#### Custom Usage
+To specify a different data file or report directory, use the following arguments:
+```bash
+python analyze.py --data_filename 'custom_data.csv' --report_dir 'custom_report_dir'
+```
+
+This will process the specified input data, perform analysis, and generate reports and visualizations in the designated report directory.
 
 ### Step 3: View the Results
 
 After the analysis completes:
 
-1. **Report**: Open the `report.txt` file located in the `report/` directory. This file contains a summary of the analyzed expenditure data, including total and average expenditures, breakdowns by category, and more.
+1. **Report**: Open the `report.txt` file located in the `report/` directory (or the directory specified in `--report_dir`). This file contains a summary of the analyzed expenditure data, including total and average expenditures, breakdowns by category, and more.
    
-2. **Figures**: Find the generated figures saved in the `report/` directory. These figures include bar charts of monthly expenditures and pie charts for expenditure breakdowns by category.
+2. **Figures**: Find the generated figures saved in the `report/` directory (or the one specified in `--report_dir`). These figures include bar charts of monthly expenditures and pie charts for expenditure breakdowns by category.
 
 The analysis results offer a comprehensive overview of the expenditure trends, helping you better understand spending patterns over time.
 
