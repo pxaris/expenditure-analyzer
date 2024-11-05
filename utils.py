@@ -1,6 +1,7 @@
+import os
+import calendar
 import pandas as pd
 import matplotlib.pyplot as plt
-import os
 
 
 def load_data(config):
@@ -34,13 +35,28 @@ def get_date_range(data, config):
     return data[config['DATE_COLUMN']].min(), data[config['DATE_COLUMN']].max()
 
 def generate_monthly_summary(data, config):
-    """Generate monthly summary with total and average expenditure."""
+    """Generate monthly summary with total expenditure and average daily expenditure."""
+    # Extract the month from the date column
     data['Month'] = data[config['DATE_COLUMN']].dt.to_period('M')
-    monthly_expenditure = data.groupby('Month')[config['EXPENDITURE_COLUMN']].agg([
-        'sum', 'mean']).reset_index()
-    monthly_expenditure.columns = [
-        'Month', 'Total Expenditure', 'Average Expenditure']
-    return monthly_expenditure.round(2)
+    
+    # Calculate the total expenditure for each month
+    monthly_expenditure = data.groupby('Month')[config['EXPENDITURE_COLUMN']].sum().reset_index()
+    monthly_expenditure.columns = ['Month', 'Total Expenditure']
+    
+    # Calculate the number of days in each month
+    monthly_expenditure['Days in Month'] = monthly_expenditure['Month'].apply(
+        lambda x: calendar.monthrange(x.year, x.month)[1]
+    )
+    
+    # Calculate the average daily expenditure by dividing total by the number of days
+    monthly_expenditure['Average Daily Expenditure'] = (
+        monthly_expenditure['Total Expenditure'] / monthly_expenditure['Days in Month']
+    ).round(2)
+    
+    # Drop the 'Days in Month' column if it’s not needed in the output
+    monthly_expenditure = monthly_expenditure.drop(columns=['Days in Month'])
+    
+    return monthly_expenditure
 
 def plot_bar_chart(data, x_col, y_col, title, ylabel, filename):
     """Plot and save a bar chart with an average line."""
