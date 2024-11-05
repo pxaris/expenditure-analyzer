@@ -35,7 +35,7 @@ def get_date_range(data, config):
     return data[config['DATE_COLUMN']].min(), data[config['DATE_COLUMN']].max()
 
 def generate_monthly_summary(data, config):
-    """Generate monthly summary with total expenditure and average daily expenditure."""
+    """Generate monthly summary with total expenditure and true average daily expenditure."""
     # Extract the month from the date column
     data['Month'] = data[config['DATE_COLUMN']].dt.to_period('M')
     
@@ -43,10 +43,18 @@ def generate_monthly_summary(data, config):
     monthly_expenditure = data.groupby('Month')[config['EXPENDITURE_COLUMN']].sum().reset_index()
     monthly_expenditure.columns = ['Month', 'Total Expenditure']
     
-    # Calculate the number of days in each month
-    monthly_expenditure['Days in Month'] = monthly_expenditure['Month'].apply(
-        lambda x: calendar.monthrange(x.year, x.month)[1]
-    )
+    # Get the maximum date in the dataset
+    max_date = data[config['DATE_COLUMN']].max()
+    last_month = max_date.to_period('M')
+    
+    # Calculate the number of days for each month, adjusting for the last month
+    def get_days_in_month(month):
+        if month == last_month:
+            return max_date.day  # Only up to the actual day in the last month
+        else:
+            return calendar.monthrange(month.year, month.month)[1]
+    
+    monthly_expenditure['Days in Month'] = monthly_expenditure['Month'].apply(get_days_in_month)
     
     # Calculate the average daily expenditure by dividing total by the number of days
     monthly_expenditure['Average Daily Expenditure'] = (
